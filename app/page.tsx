@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const services = [
   {
@@ -81,16 +81,62 @@ const prices = [
 
 type FormState = "idle" | "loading" | "sent";
 type FormErrors = Partial<Record<"name" | "phone" | "brand" | "issue", string>>;
+type ThemeChoice = "light" | "dark" | "system";
 
 export default function Home() {
   const [formState, setFormState] = useState<FormState>("idle");
   const [phone, setPhone] = useState<string>("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [theme, setTheme] = useState<ThemeChoice>(() => {
+    if (typeof window === "undefined") return "system";
+    const saved = window.localStorage.getItem("theme-choice") as ThemeChoice | null;
+    return saved ?? "system";
+  });
+  const [systemTheme, setSystemTheme] = useState<"light" | "dark">("dark");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const update = () => setSystemTheme(media.matches ? "dark" : "light");
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  const resolvedTheme = theme === "system" ? systemTheme : theme;
+  const isDark = resolvedTheme === "dark";
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem("theme-choice", theme);
+    document.documentElement.dataset.theme = resolvedTheme;
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [theme, resolvedTheme, isDark]);
 
   const brandLine = useMemo(
     () => [...brands, ...brands].join(" · "),
     []
   );
+
+  const heroSurface = isDark
+    ? "bg-slate-900/70 text-slate-50 ring-white/10"
+    : "bg-white text-slate-900 ring-slate-200 shadow-xl";
+  const formSurface = isDark ? "bg-white/5 ring-white/10" : "bg-slate-100 ring-slate-200";
+  const chipSurface = isDark ? "bg-white/5 text-slate-200 ring-white/10" : "bg-slate-100 text-slate-700 ring-slate-200";
+  const infoSection = isDark
+    ? "space-y-6 rounded-3xl bg-slate-900/80 text-slate-50 p-8 shadow-xl ring-1 ring-white/10"
+    : "space-y-6 rounded-3xl bg-white text-slate-900 p-8 shadow-xl ring-1 ring-slate-200";
+  const infoCard = isDark
+    ? "rounded-2xl bg-slate-950/50 p-5 ring-1 ring-white/10 text-slate-50"
+    : "rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 text-slate-900";
+  const mutedText = isDark ? "text-slate-200" : "text-slate-600";
+  const linkAccent = isDark ? "text-sky-300 hover:text-sky-200" : "text-sky-600 hover:text-sky-500";
+  const inputBase = isDark
+    ? "ring-1 bg-slate-950/50 text-slate-50 ring-white/10 focus:ring-sky-400"
+    : "ring-1 bg-white text-slate-900 ring-slate-300 focus:ring-sky-500";
+  const inputError = isDark
+    ? "ring-2 ring-rose-400 focus:ring-rose-400"
+    : "ring-2 ring-rose-500 focus:ring-rose-500";
 
   const formatPhone = (digits: string) => {
     if (!digits) return "";
@@ -184,7 +230,11 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-950 text-slate-50">
+    <div
+      className={`relative min-h-screen ${
+        isDark ? "bg-slate-950 text-slate-50" : "bg-slate-50 text-slate-900"
+      }`}
+    >
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_20%,rgba(56,189,248,0.15),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(129,140,248,0.12),transparent_30%),radial-gradient(circle_at_90%_60%,rgba(236,72,153,0.08),transparent_22%)]" />
 
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-6">
@@ -192,10 +242,14 @@ export default function Home() {
           <span className="text-sky-400">РЕМОНТ</span> ТЕХНИКИ
         </div>
         <div className="flex items-center gap-4 text-sm">
-          <div className="hidden sm:block text-slate-300">Москва и область</div>
-          <div className="rounded-full bg-slate-900/70 px-4 py-2 text-slate-100 shadow-lg shadow-slate-900/40 ring-1 ring-white/10">
+          <div className={`hidden sm:block ${isDark ? "text-slate-300" : "text-slate-600"}`}>Москва и область</div>
+          <div
+            className={`rounded-full px-4 py-2 text-slate-100 shadow-lg shadow-slate-900/40 ring-1 ${
+              isDark ? "bg-slate-900/70 ring-white/10" : "bg-white text-slate-900 ring-slate-200"
+            }`}
+          >
             <div className="text-xs uppercase text-slate-300">Приём заявок</div>
-            <div className="text-base font-semibold leading-tight">8:00–22:00</div>
+            <div className="text-base font-semibold leading-tight">8:00-22:00</div>
           </div>
           <a
             className="rounded-full bg-sky-500 px-5 py-2 text-sm font-semibold text-slate-950 transition hover:bg-sky-400"
@@ -203,31 +257,48 @@ export default function Home() {
           >
             +7 (800) 123-45-67
           </a>
+          <button
+            type="button"
+            onClick={() =>
+              setTheme((prev) =>
+                prev === "system" ? "light" : prev === "light" ? "dark" : "system"
+              )
+            }
+            className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
+              isDark
+                ? "border border-white/10 bg-slate-900/60 text-slate-100 shadow-sm shadow-slate-900/40 hover:border-white/30 hover:bg-slate-900/80"
+                : "border border-slate-300/60 bg-white text-slate-900 shadow hover:border-slate-400/80 hover:bg-slate-50"
+            }`}
+          >
+            Тема: {theme === "system" ? "системная" : theme === "light" ? "светлая" : "тёмная"}
+          </button>
         </div>
       </header>
 
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pb-20 pt-4">
-        <section className="grid gap-10 rounded-3xl bg-slate-900/70 p-8 ring-1 ring-white/10 lg:grid-cols-[1.2fr_0.9fr] lg:items-center lg:p-12">
+        <section
+          className={`grid gap-10 rounded-3xl p-8 lg:grid-cols-[1.2fr_0.9fr] lg:items-center lg:p-12 ${heroSurface}`}
+        >
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.18em] text-slate-200 ring-1 ring-white/10">
+            <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs uppercase tracking-[0.18em] ring-1 ${chipSurface}`}>
               Срочный ремонт • Выезд в день обращения
             </div>
             <h1 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
               Ремонт крупной бытовой техники дома и в сервисе
             </h1>
-            <p className="max-w-2xl text-lg text-slate-200">
+            <p className={`max-w-2xl text-lg ${mutedText}`}>
               Работаем с холодильниками, стиральными машинами, посудомойками,
               плитами, варочными панелями и кондиционерами. Оригинальные
               комплектующие, гарантия до 12 месяцев, прозрачные цены.
             </p>
             <div className="flex flex-wrap gap-3">
-              <span className="rounded-full bg-sky-500/15 px-3 py-1 text-sm text-sky-100 ring-1 ring-sky-400/40">
+              <span className={`rounded-full px-3 py-1 text-sm ring-1 ${isDark ? "bg-sky-500/15 text-sky-100 ring-sky-400/40" : "bg-sky-100 text-sky-800 ring-sky-200"}`}>
                 LG • Bosch • Samsung • Siemens • Electrolux
               </span>
-              <span className="rounded-full bg-white/5 px-3 py-1 text-sm text-slate-200 ring-1 ring-white/10">
+              <span className={`rounded-full px-3 py-1 text-sm ring-1 ${chipSurface}`}>
                 Москва и область
               </span>
-              <span className="rounded-full bg-white/5 px-3 py-1 text-sm text-slate-200 ring-1 ring-white/10">
+              <span className={`rounded-full px-3 py-1 text-sm ring-1 ${chipSurface}`}>
                 Без выходных, 8:00–22:00
               </span>
             </div>
@@ -235,20 +306,28 @@ export default function Home() {
               {advantages.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-2xl bg-white/5 p-4 text-sm text-slate-100 ring-1 ring-white/10"
+                  className={`rounded-2xl p-4 text-sm ring-1 ${isDark ? "bg-white/5 text-slate-100 ring-white/10" : "bg-slate-100 text-slate-800 ring-slate-200"}`}
                 >
-                  <div className="text-base font-semibold text-white">
+                  <div
+                    className={`text-base font-semibold ${
+                      isDark ? "text-white" : "text-slate-900"
+                    }`}
+                  >
                     {item.title}
                   </div>
-                  <div className="mt-2 text-slate-300">{item.text}</div>
+                  <div className={`mt-2 ${mutedText}`}>{item.text}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white/5 p-6 shadow-2xl shadow-sky-900/30 ring-1 ring-white/10 lg:p-8">
-            <div className="mb-5 text-lg font-semibold text-white">
-              Оставьте заявку — перезвоним за 5–10 минут
+          <div className={`rounded-2xl p-6 shadow-2xl shadow-sky-900/30 ring-1 lg:p-8 ${formSurface}`}>
+            <div
+              className={`mb-5 text-lg font-semibold ${
+                isDark ? "text-white" : "text-slate-900"
+              }`}
+            >
+              Оставьте заявку - перезвоним за 5-10 минут
             </div>
             {formState === "idle" ? (
               <form className="space-y-6" onSubmit={handleSubmit}>
@@ -258,10 +337,8 @@ export default function Home() {
                     <input
                       required
                       name="name"
-                      className={`w-full rounded-xl bg-slate-950/50 px-4 py-3 text-slate-50 focus:outline-none ${
-                        errors.name
-                          ? "ring-2 ring-rose-400 focus:ring-rose-400"
-                          : "ring-1 ring-white/10 focus:ring-2 focus:ring-sky-400"
+                      className={`w-full rounded-xl px-4 py-3 focus:outline-none ${
+                        errors.name ? inputError : `${inputBase} focus:ring-2`
                       }`}
                       placeholder="Алексей"
                       aria-invalid={Boolean(errors.name)}
@@ -279,10 +356,8 @@ export default function Home() {
                       required
                       name="phone"
                       type="tel"
-                      className={`w-full rounded-xl bg-slate-950/50 px-4 py-3 text-slate-50 tracking-wide focus:outline-none ${
-                        errors.phone
-                          ? "ring-2 ring-rose-400 focus:ring-rose-400"
-                          : "ring-1 ring-white/10 focus:ring-2 focus:ring-sky-400"
+                      className={`w-full rounded-xl px-4 py-3 tracking-wide focus:outline-none ${
+                        errors.phone ? inputError : `${inputBase} focus:ring-2`
                       }`}
                       placeholder="+7 (___) ___-__-__"
                       value={phone}
@@ -303,10 +378,8 @@ export default function Home() {
                   <input
                     required
                     name="brand"
-                    className={`w-full rounded-xl bg-slate-950/50 px-4 py-3 text-slate-50 focus:outline-none ${
-                      errors.brand
-                        ? "ring-2 ring-rose-400 focus:ring-rose-400"
-                        : "ring-1 ring-white/10 focus:ring-2 focus:ring-sky-400"
+                    className={`w-full rounded-xl px-4 py-3 focus:outline-none ${
+                      errors.brand ? inputError : `${inputBase} focus:ring-2`
                     }`}
                     placeholder="LG, Bosch, холодильник/стир. машина"
                     aria-invalid={Boolean(errors.brand)}
@@ -323,10 +396,8 @@ export default function Home() {
                   <textarea
                     required
                     name="issue"
-                    className={`h-24 w-full rounded-xl bg-slate-950/50 px-4 py-3 text-slate-50 focus:outline-none ${
-                      errors.issue
-                        ? "ring-2 ring-rose-400 focus:ring-rose-400"
-                        : "ring-1 ring-white/10 focus:ring-2 focus:ring-sky-400"
+                    className={`h-24 w-full rounded-xl px-4 py-3 focus:outline-none ${
+                      errors.issue ? inputError : `${inputBase} focus:ring-2`
                     }`}
                     placeholder="Не холодит, шумит, ошибка E02..."
                     aria-invalid={Boolean(errors.issue)}
@@ -344,21 +415,27 @@ export default function Home() {
                 >
                   Отправить заявку
                 </button>
-                <p className="text-xs text-slate-400">
+                <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                   Нажимая кнопку, вы даёте согласие на обработку персональных данных.
                 </p>
               </form>
             ) : (
-              <div className="flex min-h-[360px] flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-slate-950/40 text-center text-slate-50">
+              <div
+                className={`flex min-h-[360px] flex-col items-center justify-center gap-4 rounded-2xl border text-center ${
+                  isDark
+                    ? "border-white/10 bg-slate-950/40 text-slate-50"
+                    : "border-slate-200 bg-white text-slate-900"
+                }`}
+              >
                 {formState === "loading" ? (
                   <>
                     <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-sky-400" />
-                    <div className="text-sm text-slate-200">Отправляем заявку...</div>
+                    <div className={`text-sm ${mutedText}`}>Отправляем заявку...</div>
                   </>
                 ) : (
                   <>
-                    <div className="text-lg font-semibold text-white">Заявка отправлена</div>
-                    <p className="max-w-sm text-sm text-slate-200">
+                    <div className="text-lg font-semibold">Заявка отправлена</div>
+                    <p className={`max-w-sm text-sm ${mutedText}`}>
                       Мы приняли ваш запрос и скоро свяжемся для подтверждения времени визита.
                     </p>
                   </>
@@ -368,16 +445,16 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="space-y-6 rounded-3xl bg-slate-900/80 text-slate-50 p-8 shadow-xl ring-1 ring-white/10">
+        <section className={infoSection}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">С чем поможем</h2>
-              <p className="text-slate-200">
+              <p className={mutedText}>
                 Выберите тип техники - мастер приедет с нужными деталями.
               </p>
             </div>
             <a
-              className="text-sm font-semibold text-sky-300 hover:text-sky-200"
+              className={`text-sm font-semibold ${linkAccent}`}
               href="#contact"
             >
               Нужна консультация? Позвоните
@@ -387,12 +464,12 @@ export default function Home() {
             {services.map((service) => (
               <div
                 key={service.title}
-                className="rounded-2xl bg-slate-950/50 p-5 ring-1 ring-white/10 transition hover:-translate-y-1 hover:shadow-lg"
+                className={`${infoCard} transition hover:-translate-y-1 hover:shadow-lg`}
               >
-                <div className="text-lg font-semibold text-white">
+                <div className={`text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
                   {service.title}
                 </div>
-                <ul className="mt-3 space-y-2 text-sm text-slate-200">
+                <ul className={`mt-3 space-y-2 text-sm ${mutedText}`}>
                   {service.items.map((item) => (
                     <li key={item} className="flex items-start gap-2">
                       <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
@@ -405,22 +482,34 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-3xl bg-slate-900/60 p-6 ring-1 ring-white/10">
+        <section
+          className={`overflow-hidden rounded-3xl p-6 ring-1 ${
+            isDark ? "bg-slate-900/60 ring-white/10" : "bg-white ring-slate-200 shadow-xl"
+          }`}
+        >
           <div className="text-sm uppercase tracking-[0.2em] text-slate-300">
             Бренды
           </div>
-          <h2 className="mt-2 text-2xl font-semibold text-white">
+          <h2 className={`mt-2 text-2xl font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
             Оригинальные запчасти и заводские регламенты
           </h2>
-          <div className="mt-6 w-full overflow-hidden rounded-2xl bg-slate-950/40 p-4 ring-1 ring-white/5">
-            <div className="animate-marquee whitespace-nowrap text-lg font-semibold text-slate-100">
+          <div
+            className={`mt-6 w-full overflow-hidden rounded-2xl p-4 ring-1 ${
+              isDark ? "bg-slate-950/40 ring-white/5" : "bg-slate-100 ring-slate-200"
+            }`}
+          >
+            <div
+              className={`animate-marquee whitespace-nowrap text-lg font-semibold ${
+                isDark ? "text-slate-100" : "text-slate-800"
+              }`}
+            >
               {brandLine}
             </div>
           </div>
         </section>
 
         <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-5 rounded-3xl bg-slate-900/80 p-8 text-slate-50 shadow-xl ring-1 ring-white/10">
+          <div className={`${infoSection} space-y-5`}>
             <div className="text-sm uppercase tracking-[0.18em] text-slate-300">
               Этапы работы
             </div>
@@ -429,37 +518,37 @@ export default function Home() {
               {steps.map((step, index) => (
                 <div
                   key={step}
-                  className="flex gap-4 rounded-2xl bg-slate-950/50 p-4 ring-1 ring-white/10"
+                  className={`flex gap-4 rounded-2xl p-4 ring-1 ${isDark ? "bg-slate-950/50 ring-white/10" : "bg-slate-50 ring-slate-200"}`}
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-500 text-base font-semibold text-white">
                     {index + 1}
                   </div>
-                  <p className="text-slate-200">{step}</p>
+                  <p className={mutedText}>{step}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="space-y-4 rounded-3xl bg-slate-900/70 p-8 text-slate-50 ring-1 ring-white/10">
+          <div className={`space-y-4 rounded-3xl p-8 ring-1 ${isDark ? "bg-slate-900/70 text-slate-50 ring-white/10" : "bg-white text-slate-900 ring-slate-200 shadow-xl"}`}>
             <div className="text-sm uppercase tracking-[0.18em] text-slate-300">
               Прозрачные цены
             </div>
-            <h2 className="text-2xl font-semibold text-white">Примерные расценки</h2>
+            <h2 className="text-2xl font-semibold">Примерные расценки</h2>
             <div className="space-y-3">
               {prices.map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-start justify-between rounded-2xl bg-slate-950/50 p-4 ring-1 ring-white/10"
+                  className={`flex items-start justify-between rounded-2xl p-4 ring-1 ${isDark ? "bg-slate-950/50 ring-white/10" : "bg-slate-50 ring-slate-200"}`}
                 >
                   <div>
                     <div className="text-lg font-semibold">{item.name}</div>
-                    <div className="text-sm text-slate-300">{item.note}</div>
+                    <div className={`text-sm ${mutedText}`}>{item.note}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-semibold text-sky-200">
                       от {item.from} ₽
                     </div>
-                    <div className="text-xs text-slate-400">
+                    <div className={`text-xs ${mutedText}`}>
                       Диагностика — 0 ₽ при ремонте
                     </div>
                   </div>
@@ -473,17 +562,17 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="grid gap-6 rounded-3xl bg-slate-900/80 p-8 text-slate-50 shadow-xl ring-1 ring-white/10 md:grid-cols-2">
+        <section className={`grid gap-6 rounded-3xl p-8 shadow-xl ring-1 md:grid-cols-2 ${infoSection}`}>
           <div className="space-y-3">
             <div className="text-sm uppercase tracking-[0.18em] text-slate-300">
               Гарантия
             </div>
             <h2 className="text-2xl font-semibold">До 12 месяцев на работу и детали</h2>
-            <p className="text-slate-200">
+            <p className={mutedText}>
               Используем оригинальные запчасти и официальные регламенты. По завершении
               ремонта вы получаете чек и гарантийный талон.
             </p>
-            <ul className="space-y-2 text-sm text-slate-200">
+            <ul className={`space-y-2 text-sm ${mutedText}`}>
               <li className="flex items-start gap-2">
                 <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
                 <span>Оригинальные комплектующие - заказ напрямую у поставщиков</span>
@@ -498,37 +587,41 @@ export default function Home() {
               </li>
             </ul>
           </div>
-          <div className="space-y-4 rounded-2xl bg-slate-950/60 p-6 ring-1 ring-white/10">
+          <div className={`space-y-4 rounded-2xl p-6 ring-1 ${isDark ? "bg-slate-950/60 ring-white/10" : "bg-slate-100 ring-slate-200"}`}>
             <div className="text-sm uppercase tracking-[0.18em] text-slate-300">
               Контакты
             </div>
-            <h3 className="text-xl font-semibold text-slate-50">
+            <h3 className={`text-xl font-semibold ${isDark ? "text-slate-50" : "text-slate-900"}`}>
               Москва и ближайшая область
             </h3>
-            <p className="text-slate-200">
+            <p className={mutedText}>
               Выезжаем по городу и области. Пришлите адрес - подскажем, сколько займет
               дорога и во сколько приедет мастер.
             </p>
-            <div className="space-y-2 text-sm text-slate-100" id="contact">
-              <div className="font-semibold text-slate-50">Телефон: +7 (800) 123-45-67</div>
+            <div className={`space-y-2 text-sm ${isDark ? "text-slate-100" : "text-slate-800"}`} id="contact">
+              <div className={`font-semibold ${isDark ? "text-slate-50" : "text-slate-900"}`}>Телефон: +7 (800) 123-45-67</div>
               <div>Приём заявок: 8:00-22:00 ежедневно</div>
               <div>Email: info@remont-service.ru</div>
             </div>
             <a
               href="tel:+78001234567"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-slate-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
+              className={`inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold text-white transition ${isDark ? "bg-slate-800 hover:bg-slate-700" : "bg-slate-900 hover:bg-slate-800"}`}
             >
               Позвонить мастеру
             </a>
           </div>
         </section>
 
-        <section className="rounded-3xl bg-slate-900/60 p-8 text-slate-50 ring-1 ring-white/10">
+        <section
+          className={`rounded-3xl p-8 ring-1 ${
+            isDark ? "bg-slate-900/60 text-slate-50 ring-white/10" : "bg-white text-slate-900 ring-slate-200 shadow-xl"
+          }`}
+        >
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">Нужна консультация?</h2>
-              <p className="text-slate-300">
-                Опишите проблему — предложим решение и сориентируем по стоимости.
+              <p className={mutedText}>
+                Опишите проблему - предложим решение и сориентируем по стоимости.
               </p>
             </div>
             <div className="flex gap-3">
@@ -564,4 +657,16 @@ export default function Home() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
