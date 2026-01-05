@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap");
+
+:root {
+  --color-page: #f2f6fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f7f9fc;
+  --color-border: #d6dde7;
+  --color-border-strong: #c5cedb;
+
+  --color-text: #1e3654;
+  --color-text-muted: #5b6f86;
+  --color-text-soft: #7e8da1;
+
+  --color-blue-700: #2058a0;
+  --color-blue-600: #2f6fb6;
+  --color-blue-500: #4b84c6;
+  --color-blue-200: #d7e4f4;
+  --color-blue-100: #e5eef8;
+  --color-blue-50: #f2f6fc;
+
+  --color-orange-700: #d86500;
+  --color-orange-600: #f87400;
+  --color-orange-200: #ffe7c7;
+
+  --color-green-700: #2f7f12;
+  --color-green-600: #48a018;
+  --color-green-200: #dff3d2;
+
+  --gradient-hero: linear-gradient(
+    180deg,
+    #6f9ac5 0%,
+    #e8f1fb 45%,
+    #f8fbff 100%
+  );
+  --gradient-card: linear-gradient(180deg, #ffffff 0%, #f6f9fe 100%);
+  --gradient-button-orange: linear-gradient(
+    180deg,
+    #ff9a2f 0%,
+    #f87400 55%,
+    #e86400 100%
+  );
+  --gradient-button-green: linear-gradient(
+    180deg,
+    #6ac230 0%,
+    #48a018 55%,
+    #2f7f12 100%
+  );
+
+  --shadow-card: 0 6px 16px rgba(30, 54, 84, 0.15);
+  --shadow-soft: 0 2px 6px rgba(30, 54, 84, 0.12);
+  --shadow-button: 0 3px 0 rgba(0, 0, 0, 0.2);
+
+  --radius-card: 10px;
+  --radius-soft: 6px;
+  --radius-pill: 999px;
+
+  --font-primary: "PT Sans", "Segoe UI", Tahoma, Arial, sans-serif;
+  --font-heading: "PT Sans", "Segoe UI", Tahoma, Arial, sans-serif;
+  --font-mono: "Courier New", Courier, monospace;
+
+  --font-size-hero: 34px;
+  --font-size-title: 22px;
+  --font-size-subtitle: 18px;
+  --font-size-body: 16px;
+  --font-size-small: 14px;
+
+  --line-height-tight: 1.1;
+  --line-height-base: 1.4;
+  --line-height-relaxed: 1.6;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-title);
+  color: var(--color-blue-700);
+  text-align: center;
+}
+
+.card {
+  background: var(--gradient-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.btn-orange {
+  background: var(--gradient-button-orange);
+  color: #ffffff;
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow-button);
+}
+
+.btn-green {
+  background: var(--gradient-button-green);
+  color: #ffffff;
+  border-radius: var(--radius-soft);
+  box-shadow: var(--shadow-button);
+}
