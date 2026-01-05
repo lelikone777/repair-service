@@ -34,3 +34,24 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Telegram уведомления
+
+Форма на главной отправляет данные на `/api/telegram`, который пересылает заявку в личные сообщения бота.
+
+1. Создайте `.env.local` и укажите переменные:
+   ```
+   TELEGRAM_BOT_TOKEN=123456:ABC...        # токен бота
+   TELEGRAM_CHAT_ID=123456789              # ваш chat id или id группы/канала
+   ```
+2. Перезапустите dev/server после добавления переменных.
+3. Проверьте отправку, отправив форму на главной.
+
+## Структура
+
+- `app/page.tsx` — композиция секций страницы.
+- `app/components/sections/*` — секции лендинга и форма.
+- `app/components/layout/*` — шапка и подвал.
+- `app/hooks/useThemeChoice.ts` — переключение и хранение темы.
+- `app/lib/content.ts` — статический контент (услуги, цены, бренды).
+- `app/lib/themeStyles.ts` — классы Tailwind для светлой/тёмной темы.
