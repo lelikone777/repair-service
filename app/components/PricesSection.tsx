@@ -17,7 +17,7 @@ export function PricesSection({ prices }: Props) {
         ))}
       </div>
       <div className="mt-4 text-xs text-slate-500">* Точная стоимость — до начала ремонта</div>
-      <button className="mt-5 w-full rounded-xl bg-gradient-to-b from-emerald-400 to-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(16,185,129,0.35)] transition hover:translate-y-[-1px]">
+      <button className="mt-5 w-full rounded-xl bg-gradient-to-b from-emerald-400 to-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(16,185,129,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_26px_rgba(16,185,129,0.4)] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
         Вызвать мастера
       </button>
       <ul className="mt-4 space-y-2 text-xs text-slate-600">

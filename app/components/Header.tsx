@@ -1,8 +1,8 @@
 ﻿import Link from "next/link";
 
 const navLinks = [
-  { label: "Новое", href: "#", hasCaret: true },
-  { label: "Тарифы", href: "#" },
+  { label: "Новое", href: "#top", hasCaret: true },
+  { label: "Тарифы", href: "#prices" },
   { label: "Контакты", href: "#contact" },
 ];
 
@@ -59,7 +59,11 @@ export function Header() {
 
         <nav className="hidden items-center gap-6 text-sm text-slate-500 md:flex">
           {navLinks.map((link) => (
-            <Link key={link.label} href={link.href} className="flex items-center gap-1 font-medium hover:text-slate-800">
+            <Link
+              key={link.label}
+              href={link.href}
+              className="relative flex items-center gap-1 font-medium text-slate-500 transition hover:text-slate-800 active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-gradient-to-r after:from-sky-500 after:to-emerald-400 after:transition-all after:duration-300 hover:after:w-full"
+            >
               {link.label}
               {link.hasCaret ? <CaretIcon /> : null}
             </Link>
@@ -76,7 +80,7 @@ export function Header() {
               <a
                 key={social.label}
                 href={social.href}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-200"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:text-slate-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:translate-y-0"
                 aria-label={social.label}
               >
                 {social.label}

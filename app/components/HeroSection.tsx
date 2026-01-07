@@ -18,11 +18,9 @@ export function HeroSection({ categories, heroBenefits }: Props) {
           <div className="text-lg font-semibold uppercase tracking-[0.16em] text-slate-500">
             Ремонт крупной бытовой техники
           </div>
-          <h1 className="text-4xl font-bold text-slate-900 sm:text-5xl">
-            НА ДОМУ
-          </h1>
+          <h1 className="text-4xl font-bold text-slate-900 sm:text-5xl">НА ДОМУ</h1>
           <p className="text-sm font-medium text-slate-600">
-            {categories.map((item) => item.title).join(" • ")}
+            {categories.map((item) => item.title).join(" · ")}
           </p>
           <ul className="space-y-2 text-sm text-slate-700">
             {heroBenefits.map((benefit) => (
@@ -33,10 +31,10 @@ export function HeroSection({ categories, heroBenefits }: Props) {
             ))}
           </ul>
           <div className="flex flex-wrap gap-4">
-            <button className="rounded-xl bg-gradient-to-b from-orange-400 to-orange-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(234,88,12,0.35)] transition hover:translate-y-[-1px]">
+            <button className="rounded-xl bg-gradient-to-b from-orange-400 to-orange-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(234,88,12,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_26px_rgba(234,88,12,0.4)] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
               Вызвать мастера
             </button>
-            <button className="rounded-xl bg-gradient-to-b from-emerald-400 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(16,185,129,0.35)] transition hover:translate-y-[-1px]">
+            <button className="rounded-xl bg-gradient-to-b from-emerald-400 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(16,185,129,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_26px_rgba(16,185,129,0.4)] active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
               Узнать стоимость
             </button>
           </div>

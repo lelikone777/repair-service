@@ -22,7 +22,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div id="top" className="min-h-screen">
       <Header />
 
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 pb-20 pt-6">
@@ -36,7 +36,9 @@ export default function Home() {
 
         <section className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
           <ReviewsSection reviews={reviews} />
-          <PricesSection prices={prices} />
+          <div id="prices" className="scroll-mt-24">
+            <PricesSection prices={prices} />
+          </div>
         </section>
 
         <GuaranteeSection points={guaranteePoints} />

@@ -17,6 +17,11 @@ body {
   font-family: var(--font-rubik), "Segoe UI", sans-serif;
 }
 
+html,
+body {
+  scroll-behavior: smooth;
+}
+
 .animate-marquee {
   animation: marquee 28s linear infinite;
 }
