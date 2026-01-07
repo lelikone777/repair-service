@@ -1,14 +1,14 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { useState } from "react";
 import type { Review } from "../data/content";
+
+const reviewImage =
+  "https://plus.unsplash.com/premium_photo-1661342474567-f84bb6959d9f?auto=format&fit=crop&w=1200&q=80";
 
 type Props = {
   reviews: Review[];
-  infoSection: string;
-  mutedText: string;
-  isDark: boolean;
-  infoCard: string;
 };
 
 function ArrowIcon({ direction }: { direction: "left" | "right" }) {
@@ -26,141 +26,62 @@ function ArrowIcon({ direction }: { direction: "left" | "right" }) {
   );
 }
 
-export function ReviewsSection({ reviews, infoSection, mutedText, isDark, infoCard }: Props) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [page, setPage] = useState(0);
-  const [pageCount, setPageCount] = useState(1);
+function StarIcon({ active }: { active: boolean }) {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden="true">
+      <path
+        fill={active ? "#facc15" : "#cbd5f5"}
+        d="m10 1.9 2.3 4.7 5.1.7-3.7 3.6.9 5.1-4.6-2.4-4.6 2.4.9-5.1-3.7-3.6 5.1-.7L10 1.9Z"
+      />
+    </svg>
+  );
+}
 
-  useEffect(() => {
-    const updatePages = () => {
-      const track = trackRef.current;
-      if (!track) return;
-      const card = track.querySelector<HTMLElement>("[data-review-card]");
-      if (!card) return;
-      const styles = window.getComputedStyle(track);
-      const gapValue = Number.parseFloat(styles.columnGap);
-      const gap = Number.isNaN(gapValue) ? 0 : gapValue;
-      const cardWidth = card.offsetWidth + gap;
-      const perView = Math.max(1, Math.floor(track.clientWidth / cardWidth));
-      const nextPageCount = Math.max(1, Math.ceil(reviews.length / perView));
-      setPageCount(nextPageCount);
-      setPage((prev) => Math.min(prev, nextPageCount - 1));
-    };
+export function ReviewsSection({ reviews }: Props) {
+  const [index, setIndex] = useState(0);
+  const review = reviews[index];
 
-    updatePages();
-    window.addEventListener("resize", updatePages);
-    return () => window.removeEventListener("resize", updatePages);
-  }, [reviews.length]);
-
-  const averageRating = useMemo(() => {
-    if (!reviews.length) return 0;
-    const total = reviews.reduce((acc, item) => acc + item.rating, 0);
-    return Math.round((total / reviews.length) * 10) / 10;
-  }, [reviews]);
-
-  const handleScroll = () => {
-    const track = trackRef.current;
-    if (!track) return;
-    const nextPage = Math.round(track.scrollLeft / track.clientWidth);
-    setPage(nextPage);
-  };
-
-  const scrollToPage = (nextPage: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    track.scrollTo({ left: nextPage * track.clientWidth, behavior: "smooth" });
-    setPage(nextPage);
-  };
-
-  const canPrev = page > 0;
-  const canNext = page < pageCount - 1;
+  const prev = () => setIndex((current) => (current === 0 ? reviews.length - 1 : current - 1));
+  const next = () => setIndex((current) => (current === reviews.length - 1 ? 0 : current + 1));
 
   return (
-    <section className={infoSection}>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="text-sm uppercase tracking-[0.18em] text-slate-300">Отзывы клиентов</div>
-          <h2 className="text-2xl font-semibold">Нас рекомендуют</h2>
-          <p className={mutedText}>
-            Реальные отзывы о ремонте крупной бытовой техники в Москве и области.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className={`text-sm ${mutedText}`}>Средняя оценка: {averageRating}/5</div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => scrollToPage(page - 1)}
-              disabled={!canPrev}
-              className={`rounded-full border px-2 py-2 text-sm transition ${
-                canPrev
-                  ? isDark
-                    ? "border-white/10 text-slate-100 hover:bg-white/10"
-                    : "border-slate-200 text-slate-700 hover:bg-slate-100"
-                  : "border-transparent text-slate-500/60"
-              }`}
-              aria-label="Предыдущие отзывы"
-            >
-              <ArrowIcon direction="left" />
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToPage(page + 1)}
-              disabled={!canNext}
-              className={`rounded-full border px-2 py-2 text-sm transition ${
-                canNext
-                  ? isDark
-                    ? "border-white/10 text-slate-100 hover:bg-white/10"
-                    : "border-slate-200 text-slate-700 hover:bg-slate-100"
-                  : "border-transparent text-slate-500/60"
-              }`}
-              aria-label="Следующие отзывы"
-            >
-              <ArrowIcon direction="right" />
-            </button>
+    <section className="space-y-6">
+      <h2 className="text-center text-xl font-semibold text-slate-700">Отзывы наших клиентов</h2>
+      <div className="relative overflow-hidden rounded-3xl bg-white shadow-[0_20px_50px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70">
+        <Image src={reviewImage} alt="Отзыв клиента" fill className="object-cover" sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/40 via-white/30 to-transparent" />
+        <div className="relative grid gap-6 p-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-2xl bg-white/90 p-6 shadow-lg">
+            <div className="flex items-center gap-1">
+              {Array.from({ length: 5 }).map((_, starIndex) => (
+                <StarIcon key={`star-${starIndex}`} active={starIndex < review.rating} />
+              ))}
+            </div>
+            <p className="mt-4 text-sm text-slate-700">{review.text}</p>
+            <div className="mt-4 inline-flex rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow">
+              {review.name}, {review.service}
+            </div>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={prev}
+          className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow hover:bg-white"
+          aria-label="Предыдущий отзыв"
+        >
+          <ArrowIcon direction="left" />
+        </button>
+        <button
+          type="button"
+          onClick={next}
+          className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow hover:bg-white"
+          aria-label="Следующий отзыв"
+        >
+          <ArrowIcon direction="right" />
+        </button>
       </div>
-
-      <div
-        ref={trackRef}
-        onScroll={handleScroll}
-        className="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4"
-      >
-        {reviews.map((review) => (
-          <article
-            key={`${review.name}-${review.service}`}
-            data-review-card
-            className={`min-w-full snap-start sm:min-w-[calc(50%-0.75rem)] lg:min-w-[calc(33.333%-0.75rem)] ${infoCard} flex flex-col gap-3`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className={`text-base font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
-                  {review.name}
-                </div>
-                <div className={`text-xs ${mutedText}`}>{review.city}</div>
-              </div>
-              <div className={`text-xs ${isDark ? "text-sky-200" : "text-sky-700"}`}>
-                Оценка: {review.rating} из 5
-              </div>
-            </div>
-            <div className={`text-xs uppercase tracking-[0.18em] ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-              {review.service}
-            </div>
-            <p className={`text-sm ${mutedText}`}>{review.text}</p>
-          </article>
-        ))}
-      </div>
-
-      <div className="flex items-center justify-center gap-2">
-        {Array.from({ length: pageCount }).map((_, index) => (
-          <span
-            key={`dot-${index}`}
-            className={`h-1.5 w-6 rounded-full transition ${
-              index === page ? (isDark ? "bg-sky-400" : "bg-sky-600") : isDark ? "bg-white/10" : "bg-slate-200"
-            }`}
-          />
-        ))}
+      <div className="text-center text-sm text-slate-600">
+        Более <span className="font-semibold text-slate-800">90%</span> клиентов рекомендуют нас
       </div>
     </section>
   );

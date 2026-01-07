@@ -1,29 +1,19 @@
-type Props = {
+﻿type Props = {
   brands: string[];
-  isDark: boolean;
 };
 
-export function BrandsSection({ brands, isDark }: Props) {
-  const brandLine = [...brands, ...brands].join(" · ");
-
+export function BrandsSection({ brands }: Props) {
   return (
-    <section
-      className={`overflow-hidden rounded-3xl p-6 ring-1 ${
-        isDark ? "bg-slate-900/60 ring-white/10" : "bg-white ring-slate-200 shadow-xl"
-      }`}
-    >
-      <div className="text-sm uppercase tracking-[0.2em] text-slate-300">Бренды</div>
-      <h2 className={`mt-2 text-2xl font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
-        Оригинальные запчасти и заводские регламенты
-      </h2>
-      <div
-        className={`mt-6 w-full overflow-hidden rounded-2xl p-4 ring-1 ${
-          isDark ? "bg-slate-950/40 ring-white/5" : "bg-slate-100 ring-slate-200"
-        }`}
-      >
-        <div className={`animate-marquee whitespace-nowrap text-lg font-semibold ${isDark ? "text-slate-100" : "text-slate-800"}`}>
-          {brandLine}
-        </div>
+    <section className="rounded-3xl bg-white/95 p-6 shadow-[0_16px_40px_rgba(15,23,42,0.1)] ring-1 ring-slate-200/70">
+      <div className="grid gap-4 sm:grid-cols-5 md:grid-cols-7">
+        {brands.map((brand) => (
+          <div
+            key={brand}
+            className="flex items-center justify-center rounded-xl bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500"
+          >
+            {brand}
+          </div>
+        ))}
       </div>
     </section>
   );

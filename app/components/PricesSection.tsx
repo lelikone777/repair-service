@@ -1,42 +1,35 @@
-import type { Price } from "../data/content";
+﻿import type { PriceItem } from "../data/content";
 
 type Props = {
-  prices: Price[];
-  isDark: boolean;
-  mutedText: string;
+  prices: PriceItem[];
 };
 
-export function PricesSection({ prices, isDark, mutedText }: Props) {
+export function PricesSection({ prices }: Props) {
   return (
-    <div
-      className={`space-y-4 rounded-3xl p-8 ring-1 ${
-        isDark ? "bg-slate-900/70 text-slate-50 ring-white/10" : "bg-white text-slate-900 ring-slate-200 shadow-xl"
-      }`}
-    >
-      <div className="text-sm uppercase tracking-[0.18em] text-slate-300">Прозрачные цены</div>
-      <h2 className="text-2xl font-semibold">Примерные расценки</h2>
-      <div className="space-y-3">
+    <div className="rounded-3xl bg-white p-6 shadow-[0_18px_40px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/60">
+      <div className="text-base font-semibold text-slate-700">Прозрачные цены</div>
+      <div className="mt-4 space-y-3 text-sm text-slate-600">
         {prices.map((item) => (
-          <div
-            key={item.name}
-            className={`flex items-start justify-between rounded-2xl p-4 ring-1 ${
-              isDark ? "bg-slate-950/50 ring-white/10" : "bg-slate-50 ring-slate-200"
-            }`}
-          >
-            <div>
-              <div className="text-lg font-semibold">{item.name}</div>
-              <div className={`text-sm ${mutedText}`}>{item.note}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-semibold text-sky-200">от {item.from} ?</div>
-              <div className={`text-xs ${mutedText}`}>Диагностика - 0 ? при ремонте</div>
-            </div>
+          <div key={item.title} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+            <span>{item.title}</span>
+            <span className="font-semibold text-slate-800">от {item.from} ₽</span>
           </div>
         ))}
       </div>
-      <div className="rounded-2xl bg-sky-500/15 p-4 text-sm text-sky-50 ring-1 ring-sky-400/30">
-        Точную стоимость озвучим после диагностики. Мы согласуем смету до начала работ - никаких сюрпризов.
-      </div>
+      <div className="mt-4 text-xs text-slate-500">* Точная стоимость — до начала ремонта</div>
+      <button className="mt-5 w-full rounded-xl bg-gradient-to-b from-emerald-400 to-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(16,185,129,0.35)] transition hover:translate-y-[-1px]">
+        Вызвать мастера
+      </button>
+      <ul className="mt-4 space-y-2 text-xs text-slate-600">
+        <li className="flex items-center gap-2">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">✓</span>
+          Гарантия до 12 месяцев
+        </li>
+        <li className="flex items-center gap-2">
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">✓</span>
+          Без выходных
+        </li>
+      </ul>
     </div>
   );
 }

@@ -1,61 +1,33 @@
+﻿import Image from "next/image";
+
+const guaranteeImage =
+  "https://plus.unsplash.com/premium_photo-1661299233465-ad4268ddb448?auto=format&fit=crop&w=900&q=80";
+
 type Props = {
-  mutedText: string;
-  isDark: boolean;
-  infoSection: string;
+  points: string[];
 };
 
-export function GuaranteeSection({ mutedText, isDark, infoSection }: Props) {
+export function GuaranteeSection({ points }: Props) {
   return (
-    <section className={`grid gap-6 rounded-3xl p-8 shadow-xl ring-1 md:grid-cols-2 ${infoSection}`}>
-      <div className="space-y-3">
-        <div className="text-sm uppercase tracking-[0.18em] text-slate-300">Гарантия</div>
-        <h2 className="text-2xl font-semibold">До 12 месяцев на работу и детали</h2>
-        <p className={mutedText}>
-          Используем оригинальные запчасти и официальные регламенты. По завершении ремонта вы получаете чек и
-          гарантийный талон.
-        </p>
-        <ul className={`space-y-2 text-sm ${mutedText}`}>
-          <li className="flex items-start gap-2">
-            <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
-            <span>Оригинальные комплектующие - заказ напрямую у поставщиков</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
-            <span>Гарантия до 1 года - в талоне фиксируем сроки и объём работ</span>
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
-            <span>Поддержка после ремонта - отвечаем на вопросы и помогаем с уходом</span>
-          </li>
+    <section className="grid gap-8 rounded-3xl bg-white/95 p-8 shadow-[0_18px_40px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70 lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="space-y-4">
+        <h2 className="text-2xl font-semibold text-slate-800">
+          Оригинальные комплектующие
+          <br />
+          и гарантия до 12 месяцев
+        </h2>
+        <ul className="space-y-3 text-sm text-slate-600">
+          {points.map((point) => (
+            <li key={point} className="flex items-start gap-3">
+              <span className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">✓</span>
+              <span>{point}</span>
+            </li>
+          ))}
         </ul>
       </div>
-      <div
-        className={`space-y-4 rounded-2xl p-6 ring-1 ${
-          isDark ? "bg-slate-950/60 ring-white/10" : "bg-slate-100 ring-slate-200"
-        }`}
-      >
-        <div className="text-sm uppercase tracking-[0.18em] text-slate-300">Контакты</div>
-        <h3 className={`text-xl font-semibold ${isDark ? "text-slate-50" : "text-slate-900"}`}>
-          Москва и ближайшая область
-        </h3>
-        <p className={mutedText}>
-          Выезжаем по городу и области. Пришлите адрес - подскажем, сколько займет дорога и во сколько приедет мастер.
-        </p>
-        <div className={`space-y-2 text-sm ${isDark ? "text-slate-100" : "text-slate-800"}`} id="contact">
-          <div className={`font-semibold ${isDark ? "text-slate-50" : "text-slate-900"}`}>
-            Телефон: +7 (800) 123-45-67
-          </div>
-          <div>Приём заявок: 8:00-22:00 ежедневно</div>
-          <div>Email: info@remont-service.ru</div>
-        </div>
-        <a
-          href="tel:+78001234567"
-          className={`inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold text-white transition ${
-            isDark ? "bg-slate-800 hover:bg-slate-700" : "bg-slate-900 hover:bg-slate-800"
-          }`}
-        >
-          Позвонить мастеру
-        </a>
+      <div className="relative h-64 w-full overflow-hidden rounded-3xl shadow-lg">
+        <Image src={guaranteeImage} alt="Оригинальные комплектующие" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 420px" />
+        <div className="absolute inset-0 bg-gradient-to-l from-white/60 via-white/10 to-transparent" />
       </div>
     </section>
   );

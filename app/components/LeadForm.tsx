@@ -1,17 +1,15 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
-import type { ThemeClasses } from "../utils/themeClasses";
 
 type FormState = "idle" | "loading" | "sent";
 type FormErrors = Partial<Record<"name" | "phone" | "brand" | "issue", string>>;
 
 type Props = {
-  classes: Pick<ThemeClasses, "inputBase" | "inputError" | "mutedText">;
-  isDark: boolean;
+  compact?: boolean;
 };
 
-export function LeadForm({ classes, isDark }: Props) {
+export function LeadForm({ compact }: Props) {
   const [formState, setFormState] = useState<FormState>("idle");
   const [phone, setPhone] = useState<string>("");
   const [errors, setErrors] = useState<FormErrors>({});
@@ -66,7 +64,7 @@ export function LeadForm({ classes, isDark }: Props) {
 
     if (name.length < 2) nextErrors.name = "Введите имя (минимум 2 символа).";
     if (phoneDigits.length !== 11) nextErrors.phone = "Укажите телефон полностью (+7 и 10 цифр).";
-    if (brand.length < 2) nextErrors.brand = "Уточните бренд и тип техники.";
+    if (brand.length < 2) nextErrors.brand = "Уточните тип техники.";
     if (issue.length < 6) nextErrors.issue = "Опишите проблему подробнее (минимум 6 символов).";
 
     setErrors(nextErrors);
@@ -92,41 +90,35 @@ export function LeadForm({ classes, isDark }: Props) {
     }, 2400);
   };
 
-  const inputBase = classes.inputBase;
-  const inputError = classes.inputError;
-  const mutedText = classes.mutedText;
-  const labelText = isDark ? "text-slate-200" : "text-slate-700";
+  const inputBase =
+    "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-inner focus:border-sky-400 focus:outline-none";
 
   return formState === "idle" ? (
-    <form className="space-y-6" onSubmit={handleSubmit}>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <label className={`space-y-3 text-sm ${labelText}`}>
+    <form className={compact ? "grid gap-4" : "grid gap-4"} onSubmit={handleSubmit}>
+      <div className="grid gap-4 md:grid-cols-2">
+        <label className="space-y-2 text-xs font-semibold text-slate-500">
           <span>Ваше имя</span>
           <input
             required
             name="name"
-            className={`w-full rounded-xl px-4 py-3 focus:outline-none ${
-              errors.name ? inputError : `${inputBase} focus:ring-2`
-            }`}
+            className={`${inputBase} ${errors.name ? "border-rose-400" : ""}`}
             placeholder="Алексей"
             aria-invalid={Boolean(errors.name)}
             aria-describedby="name-error"
           />
           {errors.name ? (
-            <p id="name-error" className="text-xs text-rose-200">
+            <p id="name-error" className="text-[11px] text-rose-500">
               {errors.name}
             </p>
           ) : null}
         </label>
-        <label className={`space-y-3 text-sm ${labelText}`}>
+        <label className="space-y-2 text-xs font-semibold text-slate-500">
           <span>Телефон</span>
           <input
             required
             name="phone"
             type="tel"
-            className={`w-full rounded-xl px-4 py-3 tracking-wide focus:outline-none ${
-              errors.phone ? inputError : `${inputBase} focus:ring-2`
-            }`}
+            className={`${inputBase} ${errors.phone ? "border-rose-400" : ""}`}
             placeholder="+7 (___) ___-__-__"
             value={phone}
             onChange={handlePhoneChange}
@@ -135,75 +127,64 @@ export function LeadForm({ classes, isDark }: Props) {
             aria-describedby="phone-error"
           />
           {errors.phone ? (
-            <p id="phone-error" className="text-xs text-rose-200">
+            <p id="phone-error" className="text-[11px] text-rose-500">
               {errors.phone}
             </p>
           ) : null}
         </label>
       </div>
-      <label className={`space-y-3 text-sm ${labelText}`}>
-        <span>Бренд и тип техники</span>
-        <input
-          required
-          name="brand"
-          className={`w-full rounded-xl px-4 py-3 focus:outline-none ${
-            errors.brand ? inputError : `${inputBase} focus:ring-2`
-          }`}
-          placeholder="LG, Bosch, холодильник/стир. машина"
-          aria-invalid={Boolean(errors.brand)}
-          aria-describedby="brand-error"
-        />
-        {errors.brand ? (
-          <p id="brand-error" className="text-xs text-rose-200">
-            {errors.brand}
-          </p>
-        ) : null}
-      </label>
-      <label className={`space-y-3 text-sm ${labelText}`}>
-        <span>Что случилось</span>
-        <textarea
-          required
-          name="issue"
-          className={`h-24 w-full rounded-xl px-4 py-3 focus:outline-none ${
-            errors.issue ? inputError : `${inputBase} focus:ring-2`
-          }`}
-          placeholder="Не холодит, шумит, ошибка E02..."
-          aria-invalid={Boolean(errors.issue)}
-          aria-describedby="issue-error"
-        />
-        {errors.issue ? (
-          <p id="issue-error" className="text-xs text-rose-200">
-            {errors.issue}
-          </p>
-        ) : null}
-      </label>
+      <div className="grid gap-4 md:grid-cols-2">
+        <label className="space-y-2 text-xs font-semibold text-slate-500">
+          <span>Тип техники</span>
+          <input
+            required
+            name="brand"
+            className={`${inputBase} ${errors.brand ? "border-rose-400" : ""}`}
+            placeholder="Холодильник, стиральная машина"
+            aria-invalid={Boolean(errors.brand)}
+            aria-describedby="brand-error"
+          />
+          {errors.brand ? (
+            <p id="brand-error" className="text-[11px] text-rose-500">
+              {errors.brand}
+            </p>
+          ) : null}
+        </label>
+        <label className="space-y-2 text-xs font-semibold text-slate-500">
+          <span>Кратко опишите проблему</span>
+          <input
+            required
+            name="issue"
+            className={`${inputBase} ${errors.issue ? "border-rose-400" : ""}`}
+            placeholder="Не холодит, шумит, ошибка E02..."
+            aria-invalid={Boolean(errors.issue)}
+            aria-describedby="issue-error"
+          />
+          {errors.issue ? (
+            <p id="issue-error" className="text-[11px] text-rose-500">
+              {errors.issue}
+            </p>
+          ) : null}
+        </label>
+      </div>
       <button
         type="submit"
-        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-sky-500 px-4 py-3 text-base font-semibold text-slate-950 transition hover:bg-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-300"
+        className="rounded-xl bg-gradient-to-b from-emerald-400 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(16,185,129,0.35)] transition hover:translate-y-[-1px]"
       >
-        Отправить заявку
+        Вызвать мастера
       </button>
-      <p className={`text-xs ${mutedText}`}>
-        Нажимая кнопку, вы даёте согласие на обработку персональных данных.
-      </p>
     </form>
   ) : (
-    <div
-      className={`flex min-h-[360px] flex-col items-center justify-center gap-4 rounded-2xl border text-center ${
-        isDark
-          ? "border-white/10 bg-slate-950/40 text-slate-50"
-          : "border-slate-200 bg-white text-slate-900"
-      }`}
-    >
+    <div className="flex min-h-[240px] flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white text-center">
       {formState === "loading" ? (
         <>
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-sky-400" />
-          <div className={`text-sm ${mutedText}`}>Отправляем заявку...</div>
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-emerald-500" />
+          <div className="text-sm text-slate-600">Отправляем заявку...</div>
         </>
       ) : (
         <>
-          <div className="text-lg font-semibold">Заявка отправлена</div>
-          <p className={`max-w-sm text-sm ${mutedText}`}>
+          <div className="text-base font-semibold text-slate-800">Заявка отправлена</div>
+          <p className="max-w-sm text-sm text-slate-500">
             Мы приняли ваш запрос и скоро свяжемся для подтверждения времени визита.
           </p>
         </>

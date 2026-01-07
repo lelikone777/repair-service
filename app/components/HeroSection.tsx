@@ -1,76 +1,57 @@
-import { LeadForm } from "./LeadForm";
-import type { ThemeClasses } from "../utils/themeClasses";
-import type { Advantage } from "../data/content";
+﻿import Image from "next/image";
+import type { Category, HeroBenefit } from "../data/content";
+
+const heroImage =
+  "https://plus.unsplash.com/premium_photo-1683134584513-db73da8ebc29?auto=format&fit=crop&w=900&q=80";
 
 type Props = {
-  advantages: Advantage[];
-  heroSurface: string;
-  chipSurface: string;
-  mutedText: string;
-  isDark: boolean;
-  formSurface: string;
-  formClasses: Pick<ThemeClasses, "inputBase" | "inputError" | "mutedText">;
+  categories: Category[];
+  heroBenefits: HeroBenefit[];
 };
 
-export function HeroSection({
-  advantages,
-  heroSurface,
-  chipSurface,
-  mutedText,
-  isDark,
-  formSurface,
-  formClasses,
-}: Props) {
+export function HeroSection({ categories, heroBenefits }: Props) {
   return (
-    <section
-      className={`grid gap-10 rounded-3xl p-8 lg:grid-cols-[1.2fr_0.9fr] lg:items-center lg:p-12 ${heroSurface}`}
-    >
-      <div className="space-y-6">
-        <div
-          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs uppercase tracking-[0.18em] ring-1 ${chipSurface}`}
-        >
-          Срочный ремонт • Выезд в день обращения
+    <section className="relative overflow-hidden rounded-3xl bg-white/95 p-8 shadow-[0_24px_60px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/80 lg:p-12">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(37,99,235,0.16),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.16),transparent_45%)]" />
+      <div className="relative grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div className="space-y-6">
+          <div className="text-lg font-semibold uppercase tracking-[0.16em] text-slate-500">
+            Ремонт крупной бытовой техники
+          </div>
+          <h1 className="text-4xl font-bold text-slate-900 sm:text-5xl">
+            НА ДОМУ
+          </h1>
+          <p className="text-sm font-medium text-slate-600">
+            {categories.map((item) => item.title).join(" • ")}
+          </p>
+          <ul className="space-y-2 text-sm text-slate-700">
+            {heroBenefits.map((benefit) => (
+              <li key={benefit.text} className="flex items-center gap-2">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-xs text-white">✓</span>
+                <span>{benefit.text}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap gap-4">
+            <button className="rounded-xl bg-gradient-to-b from-orange-400 to-orange-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(234,88,12,0.35)] transition hover:translate-y-[-1px]">
+              Вызвать мастера
+            </button>
+            <button className="rounded-xl bg-gradient-to-b from-emerald-400 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-[0_10px_20px_rgba(16,185,129,0.35)] transition hover:translate-y-[-1px]">
+              Узнать стоимость
+            </button>
+          </div>
         </div>
-        <h1 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-          Ремонт крупной бытовой техники дома и в сервисе
-        </h1>
-        <p className={`max-w-2xl text-lg ${mutedText}`}>
-          Работаем с холодильниками, стиральными машинами, посудомойками, плитами, варочными панелями и
-          кондиционерами. Оригинальные комплектующие, гарантия до 12 месяцев, прозрачные цены.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <span
-            className={`rounded-full px-3 py-1 text-sm ring-1 ${
-              isDark ? "bg-sky-500/15 text-sky-100 ring-sky-400/40" : "bg-sky-100 text-sky-800 ring-sky-200"
-            }`}
-          >
-            LG • Bosch • Samsung • Siemens • Electrolux
-          </span>
-          <span className={`rounded-full px-3 py-1 text-sm ring-1 ${chipSurface}`}>Москва и область</span>
-          <span className={`rounded-full px-3 py-1 text-sm ring-1 ${chipSurface}`}>Без выходных, 8:00-22:00</span>
+        <div className="relative mx-auto h-[320px] w-full max-w-sm lg:h-[420px]">
+          <div className="absolute inset-0 rounded-3xl bg-white/80 shadow-[0_18px_40px_rgba(15,23,42,0.18)]" />
+          <Image
+            src={heroImage}
+            alt="Мастер по ремонту техники"
+            fill
+            className="rounded-3xl object-cover"
+            sizes="(max-width: 1024px) 100vw, 420px"
+            priority
+          />
         </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {advantages.map((item) => (
-            <div
-              key={item.title}
-              className={`rounded-2xl p-4 text-sm ring-1 ${
-                isDark ? "bg-white/5 text-slate-100 ring-white/10" : "bg-slate-100 text-slate-800 ring-slate-200"
-              }`}
-            >
-              <div className={`text-base font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
-                {item.title}
-              </div>
-              <div className={`mt-2 ${mutedText}`}>{item.text}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className={`rounded-2xl p-6 shadow-2xl shadow-sky-900/30 ring-1 lg:p-8 ${formSurface}`}>
-        <div className={`mb-5 text-lg font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>
-          Оставьте заявку - перезвоним за 5-10 минут
-        </div>
-        <LeadForm classes={formClasses} isDark={isDark} />
       </div>
     </section>
   );

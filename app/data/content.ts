@@ -1,132 +1,86 @@
-export type Service = { title: string; items: string[] };
-export type Advantage = { title: string; text: string };
-export type Price = { name: string; from: number; note: string };
-export type Review = {
-  name: string;
-  city: string;
-  service: string;
-  rating: number;
-  text: string;
-};
+﻿export type Category = { title: string; icon: "fridge" | "washer" | "dishwasher" | "oven" | "cooktop" };
+export type HeroBenefit = { text: string };
+export type WhyUsItem = { title: string; icon: "home" | "tag" | "shield" | "wallet" | "calendar" };
+export type Step = { title: string; text: string };
+export type PriceItem = { title: string; from: number };
+export type Review = { name: string; service: string; rating: number; text: string };
 
-export const services: Service[] = [
-  {
-    title: "Холодильники",
-    items: ["Не морозит / не холодит", "Шумит компрессор", "Появился иней"],
-  },
-  {
-    title: "Стиральные машины",
-    items: [
-      "Не сливает воду",
-      "Не крутит барабан",
-      "Выдаёт ошибку программы",
-    ],
-  },
-  {
-    title: "Посудомойки",
-    items: ["Плохо моет", "Не набирает/сливает воду", "Подтекает"],
-  },
-  {
-    title: "Духовые шкафы и плиты",
-    items: ["Не греет духовка", "Не включается конфорка", "Пахнет газ"],
-  },
-  {
-    title: "Варочные панели",
-    items: ["Сбои сенсора", "Не включается зона", "Выбивает автомат"],
-  },
-  {
-    title: "Кондиционеры",
-    items: ["Не охлаждает", "Капает вода", "Шумит внутренний блок"],
-  },
+export const categories: Category[] = [
+  { title: "Холодильники", icon: "fridge" },
+  { title: "Стиральные машины", icon: "washer" },
+  { title: "Посудомойки", icon: "dishwasher" },
+  { title: "Плиты и духовки", icon: "oven" },
+  { title: "Варочные панели", icon: "cooktop" },
 ];
 
-export const brands = [
-  "LG",
-  "Bosch",
-  "Samsung",
-  "Indesit",
-  "AEG",
-  "Siemens",
-  "Electrolux",
-  "Whirlpool",
-  "Beko",
-  "Haier",
-  "Gorenje",
-  "Candy",
+export const heroBenefits: HeroBenefit[] = [
+  { text: "Оригинальные комплектующие" },
+  { text: "Гарантия до 12 месяцев" },
+  { text: "Прозрачные цены" },
 ];
 
-export const advantages: Advantage[] = [
-  {
-    title: "Выезд за 30-90 минут",
-    text: "Мастера в каждом районе. Работаем ежедневно с 8:00 до 22:00.",
-  },
-  {
-    title: "Гарантия до 1 года",
-    text: "Оригинальные запчасти, чек и гарантийный талон на каждый ремонт.",
-  },
-  {
-    title: "Честная цена",
-    text: "Диагностика - 0 ? при согласии на ремонт. Итоговая смета до начала работ.",
-  },
+export const whyUs: WhyUsItem[] = [
+  { title: "Ремонт на дому за 1 визит", icon: "home" },
+  { title: "Цена фиксируется заранее", icon: "tag" },
+  { title: "Без навязанных услуг", icon: "shield" },
+  { title: "Оплата после ремонта", icon: "wallet" },
+  { title: "Работаем без выходных", icon: "calendar" },
 ];
 
-export const steps = [
-  "Принимаем заявку по телефону или через форму",
-  "Согласуем время и примерную стоимость",
-  "Мастер приезжает, проводит диагностику",
-  "Согласовываем ремонт, меняем детали и тестируем",
-  "Вы получаете чек и гарантию до 12 месяцев",
+export const steps: Step[] = [
+  { title: "Заявка", text: "Звонок или сообщение" },
+  { title: "Диагностика", text: "Точная причина поломки" },
+  { title: "Согласование", text: "Фиксируем цену ремонта" },
+  { title: "Ремонт и гарантия", text: "Выполним и выдадим гарантию" },
 ];
 
-export const prices: Price[] = [
-  { name: "Холодильники", from: 1200, note: "Замена реле, дозаправка, устранение течи" },
-  { name: "Стиральные машины", from: 1100, note: "Сливной насос, подшипники, модуль" },
-  { name: "Посудомойки", from: 1300, note: "Протечки, ТЭН, циркуляционный насос" },
-  { name: "Плиты/духовки", from: 1400, note: "ТЭН, термостат, газ-контроль" },
-  { name: "Кондиционеры", from: 1500, note: "Заправка, чистка, дренаж" },
+export const prices: PriceItem[] = [
+  { title: "Диагностика", from: 500 },
+  { title: "Замена насоса", from: 1800 },
+  { title: "Заправка кондиционера", from: 2500 },
+];
+
+export const guaranteePoints = [
+  "Оригинальные детали и прозрачные аналоги",
+  "Гарантия до 12 месяцев",
+  "Точная стоимость — до начала ремонта",
 ];
 
 export const reviews: Review[] = [
   {
-    name: "Ирина К.",
-    city: "Химки",
-    service: "Ремонт стиральной машины",
+    name: "Анна",
+    service: "Стиральная машина",
     rating: 5,
-    text: "Мастер приехал в тот же день, быстро нашел причину и заменил насос. Все чисто и аккуратно.",
+    text: "Мастер приехал в день обращения, быстро нашел причину поломки. Цена совпала с озвученной по телефону. Всё работает отлично, дали гарантию.",
   },
   {
-    name: "Александр М.",
-    city: "Москва",
-    service: "Холодильник LG",
+    name: "Артём",
+    service: "Холодильник",
     rating: 5,
-    text: "Проблема с охлаждением решилась за один визит. Объяснили, что было не так, дали рекомендации по уходу.",
+    text: "Понравилась пунктуальность и аккуратность. Объяснили, что сломалось, и сразу устранили проблему.",
   },
   {
-    name: "Мария П.",
-    city: "Красногорск",
+    name: "Елена",
     service: "Посудомоечная машина",
     rating: 4,
-    text: "Записали на удобное время, мастер вежливый, привез запчасть. Все работает, спасибо.",
+    text: "Приехали в удобное время, мастер вежливый, привез детали. Всё работает без нареканий.",
   },
-  {
-    name: "Николай С.",
-    city: "Мытищи",
-    service: "Варочная панель",
-    rating: 5,
-    text: "Починили сенсорную панель, дали гарантию и чек. Стоимость назвали до ремонта, без сюрпризов.",
-  },
-  {
-    name: "Ольга Р.",
-    city: "Долгопрудный",
-    service: "Духовой шкаф",
-    rating: 5,
-    text: "Мастер всё подробно объяснил и заменил термостат. Понравилась пунктуальность и аккуратность.",
-  },
-  {
-    name: "Денис Л.",
-    city: "Москва",
-    service: "Кондиционер",
-    rating: 4,
-    text: "Почистили и заправили, сразу стало холоднее. Быстро, без навязывания лишних работ.",
-  },
+];
+
+export const brands = [
+  "Samsung",
+  "Bosch",
+  "LG",
+  "Electrolux",
+  "Whirlpool",
+  "Atlant",
+  "Haier",
+  "Beko",
+  "Gorenje",
+  "Zanussi",
+  "Ariston",
+  "AEG",
+  "Siemens",
+  "Candy",
+  "Vestfrost",
 ];
