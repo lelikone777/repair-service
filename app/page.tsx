@@ -30,10 +30,14 @@ export default function Home() {
   return (
     <div
       className={`relative min-h-screen ${
-        isDark ? "bg-slate-950 text-slate-50" : "bg-slate-50 text-slate-900"
+        isDark
+          ? "bg-slate-950 text-slate-50"
+          : "bg-[var(--gradient-page)] text-slate-900"
       }`}
     >
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_20%,rgba(56,189,248,0.15),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(129,140,248,0.12),transparent_30%),radial-gradient(circle_at_90%_60%,rgba(236,72,153,0.08),transparent_22%)]" />
+      {isDark && (
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_20%,rgba(56,189,248,0.15),transparent_30%),radial-gradient(circle_at_80%_0%,rgba(129,140,248,0.12),transparent_30%),radial-gradient(circle_at_90%_60%,rgba(236,72,153,0.08),transparent_22%)]" />
+      )}
 
       <SiteHeader theme={theme} isDark={isDark} onThemeCycle={cycleTheme} />
 

@@ -9,7 +9,7 @@
 }
 
 body {
-  background: var(--color-page);
+  background: var(--gradient-page);
   color: var(--color-text);
   font-family: var(--font-primary);
 }
